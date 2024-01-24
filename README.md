@@ -40,15 +40,9 @@ Les interfaces graphiques de l'application sont élaborées de manière intuitiv
 ## Screenshots
 
 
-|Home| Search Articles | Search Articles | Search Results| 
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
-| ![Home](/Screenshots/12.jpg) | ![Search](/Screenshots/2.jpg) | ![Search Articles](/Screenshots/15.jpg) |![Search Results](/Screenshots/8.jpg) | 
-|Popular Articles| Popular Articles by views| Popular Articles by shares| | Top Voted Topics | 
-| ![Popular Articles](/Screenshots/10.jpg) | ![Popular Articles by views](/Screenshots/19.jpg) | ![Popular Articles by shares](/Screenshots/11.jpg)|![Top Voted Topics](/Screenshots/1.jpg)| 
-|Top Voted Topics| Top Voted Topics | Erros | Erros| 
-| ![Top Voted Topics](/Screenshots/14.jpg) | ![Top Voted Topics](/Screenshots/9.jpg) | ![Erros](/Screenshots/5.jpg) |![Erros](/Screenshots/16.jpg) | |
-
-
+|Top Articles| Article Detail | Bookmarked Articles | 
+:-------------------------:|:-------------------------:|:-------------------------:|
+| ![Top Articles](/1.png) | ![Article Detail](/2.png) | ![Bookmarked Articles](/3.png) |
 
 
 ## Technologies Utilisées
