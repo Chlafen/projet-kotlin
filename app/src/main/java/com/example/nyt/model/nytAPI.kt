@@ -10,15 +10,18 @@ interface nytAPI {
     // Returns 10 articles of a certain type
     @GET("search/v2/articlesearch.json")
     fun getArticles(@Query("q") articleType: String,
-                    @Query("api-key") apiKey: String = "9zoqhcOUuYczhVX68TkOGuyThcJvjIWg"
+                    @Query("api-key") apiKey: String = "mkEQIF2RmWdfHHJ1HGIUqkrH6NfdGVJg"
                     ): Call<Article>
     // Returns 20 Top Articles in the last week on a certain metric
     // metric can be "viewed" | "shared" | "emailed"
     @GET("mostpopular/v2/{metric}/7.json")
     fun getTopArticles(@Query("metric") metric: Metric,
-                       @Query("api-key") apiKey: String = "9zoqhcOUuYczhVX68TkOGuyThcJvjIWg"
+                       @Query("api-key") apiKey: String = "mkEQIF2RmWdfHHJ1HGIUqkrH6NfdGVJg"
                        ): Call<TopArticles>
 
+    // Returns a single article
+    @GET("search/v2/articlesearch.json")
+    fun getArticle()
 }
 
 

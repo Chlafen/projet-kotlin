@@ -41,7 +41,7 @@ import kotlin.math.min
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel: NYTViewModel = NYTViewModel()
-    viewModel.getArticles( ArticleType.All)
+    viewModel.getArticles( ArticleType.Science)
     val articles by viewModel.articles.observeAsState()
 
 
@@ -59,7 +59,11 @@ fun HomeScreen(navController: NavController) {
 fun ArticleCard(article: Doc, navController: NavController) {
 
     Button (
-        onClick = { navController.navigate( "/articles/${article._id}") },
+        onClick = {
+            val articleId= article._id.replace("nyt://article/", "")
+            Log.d("ArticleCard", "ArticleCard: $articleId")
+            navController.navigate("articles?id=$articleId")
+        },
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()

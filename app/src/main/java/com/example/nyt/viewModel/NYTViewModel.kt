@@ -23,6 +23,7 @@ class NYTViewModel : ViewModel() {
 
     fun getArticles(articleType: ArticleType) {
         val call = nytRetrofit.retrofitService.getArticles(articleType.value)
+        Log.d("request", call.toString())
         call.enqueue(object : Callback<Article> {
             override fun onResponse(
                 call: Call<Article>,
@@ -43,6 +44,7 @@ class NYTViewModel : ViewModel() {
 
     fun getTopArticles(metric: Metric) {
         val call = nytRetrofit.retrofitService.getTopArticles(metric)
+        Log.d("request", call.toString())
         call.enqueue(object : Callback<TopArticles> {
             override fun onResponse(call: Call<TopArticles>, response: Response<TopArticles>) {
                 if (response.isSuccessful) {

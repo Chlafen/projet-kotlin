@@ -20,5 +20,8 @@ data class Doc(
     val type_of_material: String,
     val uri: String,
     val web_url: String,
-    val word_count: Int
+    val word_count: Int,
+    //getter for id
+    val id: String
+
 )
