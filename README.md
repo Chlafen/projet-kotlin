@@ -1,7 +1,7 @@
 
 # NYT Articles App
 
-L'application mobile NYT Articles récupère une liste d'articles apparus dans New York Times et offre des fonctionnalités tel que la consultation des articles les plus populaires, la recherche des articles , la lecture d'un article ...
+L'application mobile NYT Articles récupère une liste d'articles apparus dans New York Times et offre des fonctionnalités tel que la consultation des articles les plus populaires, la recherche des articles , la lecture d'un article ,ajouter des articles en favoris
 
 ## Fonctionnalités
 1. **Affichage des articles les plus populaires de cette semaine**
