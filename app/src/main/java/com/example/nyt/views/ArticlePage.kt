@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -52,11 +53,29 @@ fun ArticlePage(navController: NavController, articleID: String) {
     Log.d("ArticlePage", "ArticlePage: $articleID")
     val articles by viewModel.articles.observeAsState()
     var size = articles?.response?.docs?.size ?: 0
+    val apiError by viewModel.apiError.observeAsState()
 
+    if(apiError != null) {
+        Log.d("HomeScreen", "HomeScreen: $apiError")
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Error: ${apiError.toString()}")
+            Button(onClick = {
+                viewModel.getArticles(ArticleType.Science)
+            }) {
+                Text(text = "Retry")
+            }
+        }
+    }else
     if(size > 0) {
         val article =
             articles!!.response.docs.find { it._id.replace("nyt://article/", "") == articleID }
-        Log.d("ArticlePage",article.toString())
+
         if(article != null) {
             var url =
                 "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"

@@ -22,12 +22,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.nyt.ui.theme.NYTTheme
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+        ExperimentalCoroutinesApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -47,7 +52,11 @@ class MainActivity : ComponentActivity() {
                                 mutableStateOf(navController.currentBackStackEntry?.destination?.route.toString())
                             }
                             navController.addOnDestinationChangedListener { controller, destination, arguments ->
-                                title = destination.route?:"NYT Articles"
+                                title = destination.route.toString().split("?").first().replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.getDefault()
+                                    ) else it.toString()
+                                }
                                 Log.d("main", title?:"")
                             }
                             TopAppBar(
