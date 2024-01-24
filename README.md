@@ -52,3 +52,4 @@ Les interfaces graphiques de l'application sont élaborées de manière intuitiv
 - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel): Gestion des données et de la logique d'affichage.
 - [SharedPreferences](https://developer.android.com/training/data-storage/shared-preferences): Stockage des données locales, notamment la liste des articles favoris.
 - [Android Jetpack](https://developer.android.com/jetpack): Ensemble de bibliothèques Android recommandées pour le développement des interfaces graphiques.
+- [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) : Stockage réactif des données et l'observation .
