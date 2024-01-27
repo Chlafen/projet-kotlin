@@ -1,10 +1,5 @@
 package com.example.nyt.viewModel
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,18 +23,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NYTViewModel : ViewModel() {
-
+object NYTViewModel : ViewModel() {
     private val _articles = MutableLiveData<Article>()
     private val _apiError = MutableLiveData<String>()
+    private val _loadingState = MutableLiveData<Boolean>()
     private val _lastCallDateTime = MutableLiveData<Long>()
     val articles: LiveData<Article> get() = _articles
     val apiError: LiveData<String> get() = _apiError
+
+    val loadingState: LiveData<Boolean> get() = _loadingState
+
     private val _topArticles = MutableLiveData<TopArticles>()
-    val topArticles: LiveData<TopArticles> get() = _topArticles
 
     private var searchQuery = MutableStateFlow("")
-    val searchText = searchQuery.asStateFlow()
+    private val searchText = searchQuery.asStateFlow()
 
     private val articlesFlow = flowOf(_articles)
 
@@ -56,36 +53,39 @@ class NYTViewModel : ViewModel() {
                 started = SharingStarted.WhileSubscribed(5_000)
             )
 
+    fun resetArticles(){
+        _articles.postValue(null)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getArticles(articleType: ArticleType, searchQ:String="") {
         val diffTime = (((System.currentTimeMillis() - (_lastCallDateTime.value ?:0))))
         if(diffTime <= 5000){
-            Log.d("getArticles", "getArticles: TOO SOON ${diffTime.toString()}")
             return
         }
         _lastCallDateTime.postValue( System.currentTimeMillis())
         val filterQ = "news_desk:(\"${articleType.value}\")"
-        val call = nytRetrofit.retrofitService.getArticles(searchQ, filterQ)
-        Log.d("request", call.toString())
+        val call = nytRetrofit.retrofitService.getArticles("newest", searchQ, filterQ)
+        _loadingState.postValue(true)
         call.enqueue(object : Callback<Article> {
             override fun onResponse(
                 call: Call<Article>,
                 response: Response<Article>
             ) {
-                Log.d("response", response.toString())
+                _loadingState.postValue(false)
                 if (response.isSuccessful) {
                     _articles.postValue(response.body())
                     articlesFlow.mapLatest { it }
                     _apiError.postValue(null)
                 }else{
-                    Log.d("error", response.message())
                     _apiError.postValue(response.message())
+                    _loadingState.postValue(false)
                 }
             }
 
             override fun onFailure(call: Call<Article>, t: Throwable) {
+                _loadingState.postValue(false)
                 _apiError.postValue(t.message)
-                Log.e("Error", "Call Failed", t)
             }
         })
     }
@@ -97,14 +97,14 @@ class NYTViewModel : ViewModel() {
     fun getTopArticles(metric: Metric) {
         val diffTime = (((System.currentTimeMillis() - (_lastCallDateTime.value ?:0))))
         if(diffTime <= 5000){
-            Log.d("getArticles", "getArticles: TOO SOON ${diffTime.toString()}")
             return
         }
         _lastCallDateTime.postValue( System.currentTimeMillis())
+        _loadingState.postValue(true)
         val call = nytRetrofit.retrofitService.getTopArticles(metric)
-        Log.d("request", call.toString())
         call.enqueue(object : Callback<TopArticles> {
             override fun onResponse(call: Call<TopArticles>, response: Response<TopArticles>) {
+                _loadingState.postValue(false)
                 if (response.isSuccessful) {
                     _apiError.postValue(null)
                     _topArticles.postValue(response.body())
@@ -114,7 +114,7 @@ class NYTViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<TopArticles>, t: Throwable) {
-                Log.e("Error", "Call Failed", t)
+                _loadingState.postValue(false)
                 _apiError.postValue(t.message)
             }
         })

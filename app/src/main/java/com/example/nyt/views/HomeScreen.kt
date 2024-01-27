@@ -1,6 +1,5 @@
 package com.example.nyt.views
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -8,24 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -34,27 +27,23 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.substring
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.nyt.BottomNavItem
 import com.example.nyt.data.Doc
 import com.example.nyt.model.ArticleType
 import com.example.nyt.viewModel.NYTViewModel
-import kotlin.math.max
 import kotlin.math.min
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    val viewModel = NYTViewModel()
-    viewModel.getArticles( ArticleType.Science)
+    val viewModel = NYTViewModel
+    viewModel.getArticles( ArticleType.All, "")
     val articles by viewModel.articles.observeAsState()
     val apiError by viewModel.apiError.observeAsState()
+    val loadingState by viewModel.loadingState.observeAsState()
 
     if(apiError != null) {
-        Log.d("HomeScreen", "HomeScreen: $apiError")
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -64,12 +53,22 @@ fun HomeScreen(navController: NavController) {
         ) {
             Text(text = "Error: ${apiError.toString()}")
             Button(onClick = {
-                viewModel.getArticles(ArticleType.Science)
+                viewModel.getArticles(ArticleType.All)
             }) {
                 Text(text = "Retry")
             }
         }
-    }else
+    }else if(loadingState == true) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator()
+        }
+    }
         LazyColumn (
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -85,9 +84,8 @@ fun ArticleCard(article: Doc, navController: NavController) {
 
     Button (
         onClick = {
-            val articleId= article._id.replace("nyt://article/", "")
-            Log.d("ArticleCard", "ArticleCard: $articleId")
-            navController.navigate("articles?id=$articleId")
+            val articleId= article._id.split('/')[3]
+            navController.navigate("articles?id=$articleId&headLineMain=${article.headline.main}")
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -105,7 +103,8 @@ fun ArticleCard(article: Doc, navController: NavController) {
         Card(
             modifier = Modifier
                 .padding(8.dp)
-                .height(160.dp),
+                .shadow(0.dp, RectangleShape, clip = false)
+                .heightIn(min = 100.dp, max = 200.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -122,8 +121,7 @@ fun ArticleCard(article: Doc, navController: NavController) {
                 AsyncImage(
                     model = url,
                     modifier = Modifier
-                        .width(180.dp)
-                        .height(160.dp),
+                        .width(180.dp) ,
                     contentScale = ContentScale.FillHeight,
                     contentDescription = article.headline.main,
                 )
@@ -135,14 +133,14 @@ fun ArticleCard(article: Doc, navController: NavController) {
                     Text(
                         text = article.headline.main.substring(
                             0,
-                            min(20, article.headline.main.length)
+                            min(25, article.headline.main.length)
                         ) + "...", style = MaterialTheme.typography.titleMedium
                     )
 
                     Text(
                         text = article.abstract.substring(
                             0,
-                            min(80, article.abstract.length)
+                            min(70, article.abstract.length)
                         ) + "...", style = MaterialTheme.typography.bodyMedium
                     )
                     Row(
@@ -158,7 +156,7 @@ fun ArticleCard(article: Doc, navController: NavController) {
                             style = MaterialTheme.typography.bodySmall
                         )
                         Text(text = " | ", style = MaterialTheme.typography.bodySmall)
-                        Text(text = article.source, style = MaterialTheme.typography.bodySmall)
+                        Text(text = article.source?:"Unkown Source", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }

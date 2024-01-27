@@ -15,7 +15,7 @@ data class Doc(
     val pub_date: String,
     val section_name: String,
     val snippet: String,
-    val source: String,
+    val source: String?,
     val subsection_name: String,
     val type_of_material: String,
     val uri: String,

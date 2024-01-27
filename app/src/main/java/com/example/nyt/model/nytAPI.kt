@@ -10,6 +10,7 @@ interface nytAPI {
     // Returns 10 articles of a certain type
     @GET("search/v2/articlesearch.json")
     fun getArticles(
+        @Query("sort") sort: String = "newest",
         @Query("q") searchQuery: String,
         @Query("fq") filterQuery: String = "news_desk:()",
         @Query("api-key") apiKey: String = "KJ30ktW6tV37FlGsqgXVHl6Qk3TjMGTt",

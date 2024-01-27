@@ -1,7 +1,6 @@
 package com.example.nyt.views
 
 import PreferencesManager
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -9,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,18 +23,17 @@ import com.example.nyt.viewModel.NYTViewModel
 
 @Composable
 fun BookmarksScreen(navController: NavController) {
-    val viewModel: NYTViewModel = NYTViewModel()
-    viewModel.getArticles( ArticleType.Science)
+    val viewModel = NYTViewModel
+    viewModel.getArticles( ArticleType.All)
     val articles by viewModel.articles.observeAsState()
 
     val ctx = LocalContext.current
     val preferencesManager = remember { PreferencesManager(ctx) }
 
-    var shows = false
     val apiError by viewModel.apiError.observeAsState()
+    val loadingState by viewModel.loadingState.observeAsState()
 
     if(apiError != null) {
-        Log.d("errView", "HomeScreen: $apiError")
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -45,16 +43,26 @@ fun BookmarksScreen(navController: NavController) {
         ) {
             Text(text = "Error: ${apiError.toString()}")
             Button(onClick = {
-                viewModel.getArticles(ArticleType.Science)
+                viewModel.getArticles(ArticleType.All)
             }) {
                 Text(text = "Retry")
             }
+        }
+    }else if(loadingState == true) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator()
         }
     }else {
         val bookmarks = preferencesManager.getBookmarks()
         val bookmarkedArticles = with(articles) {
             this?.response?.docs?.filter {
-                bookmarks.contains(it._id.replace("nyt://article/", ""))
+                bookmarks.contains(it._id.split("/" )[3])
             }
         }
         if(bookmarkedArticles.isNullOrEmpty()){
@@ -71,7 +79,7 @@ fun BookmarksScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(bookmarkedArticles.size ?: 0) { index ->
+                items(bookmarkedArticles.size) { index ->
                     val article = bookmarkedArticles[index]
                     ArticleCard(article, navController = navController)
 
