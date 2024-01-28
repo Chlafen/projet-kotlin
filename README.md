@@ -40,9 +40,14 @@ Les interfaces graphiques de l'application sont élaborées de manière intuitiv
 ## Screenshots
 
 
-|Top Articles| Article Detail | Bookmarked Articles | 
-:-------------------------:|:-------------------------:|:-------------------------:|
-| ![Top Articles](/1.png) | ![Article Detail](/2.png) | ![Bookmarked Articles](/3.png) |
+|Top Articles| Top Articles | Article Detail | Add Article to Bookmarks | 
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+| ![Top Articles](/PICS/1.jpg) | ![Top Articles](/PICS/2.jpg) | ![Article Detail](/PICS/3.jpg) |![Add Article to Bookmarks](/PICS/4.jpg)
+
+|Bookmarks Page| Search Page | Search Results || 
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+| ![Bookmarks Page](/PICS/5.jpg) | ![Search Page](/PICS/6.jpg) | ![Search Results](/PICS/7.jpg) |
+
 
 
 ## Technologies Utilisées
