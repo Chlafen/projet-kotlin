@@ -40,13 +40,18 @@ Les interfaces graphiques de l'application sont élaborées de manière intuitiv
 ## Screenshots
 
 
-|Top Articles| Top Articles | Article Detail | Add Article to Bookmarks | 
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
-| ![Top Articles](/PICS/1.jpg) | ![Top Articles](/PICS/2.jpg) | ![Article Detail](/PICS/3.jpg) |![Add Article to Bookmarks](/PICS/4.jpg)
+|Top Articles| Top Articles | Article Detail | 
+:-------------------------:|:-------------------------:|:-------------------------:|
+| ![Top Articles](/PICS/1.jpg) | ![Top Articles](/PICS/2.jpg) | ![Article Detail](/PICS/3.jpg) |
 
-|Bookmarks Page| Search Page | Search Results || 
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
-| ![Bookmarks Page](/PICS/5.jpg) | ![Search Page](/PICS/6.jpg) | ![Search Results](/PICS/7.jpg) |
+|Add Article to Bookmarks |Bookmarks Page| Search Page |  
+:-------------------------:|:-------------------------:|:-------------------------:|
+![Add Article to Bookmarks](/PICS/4.jpg)| ![Bookmarks Page](/PICS/5.jpg) | ![Search Page](/PICS/6.jpg) | 
+
+|Search Results |No Internet| Back Online |  
+:-------------------------:|:-------------------------:|:-------------------------:|
+![Search Results](/PICS/7.jpg)| ![No Internet](/PICS/8.jpg) | ![Back Online](/PICS/9.jpg) | 
+
 
 
 
