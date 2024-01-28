@@ -1,5 +1,6 @@
 package com.example.nyt.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,11 +26,13 @@ import retrofit2.Response
 
 object NYTViewModel : ViewModel() {
     private val _articles = MutableLiveData<Article>()
+    private val _articlesType = MutableLiveData<ArticleType>()
     private val _apiError = MutableLiveData<String>()
     private val _loadingState = MutableLiveData<Boolean>()
     private val _lastCallDateTime = MutableLiveData<Long>()
     val articles: LiveData<Article> get() = _articles
     val apiError: LiveData<String> get() = _apiError
+    val articlesType: LiveData<ArticleType> get() = _articlesType
 
     val loadingState: LiveData<Boolean> get() = _loadingState
 
@@ -58,15 +61,22 @@ object NYTViewModel : ViewModel() {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun getArticles(articleType: ArticleType, searchQ:String="") {
+    fun getArticles(searchQ: String = "", articleType: ArticleType?) {
         val diffTime = (((System.currentTimeMillis() - (_lastCallDateTime.value ?:0))))
         if(diffTime <= 5000){
             return
         }
         _lastCallDateTime.postValue( System.currentTimeMillis())
-        val filterQ = "news_desk:(\"${articleType.value}\")"
-        val call = nytRetrofit.retrofitService.getArticles("newest", searchQ, filterQ)
+        val filterQ = "news_desk:(\"${articleType?.value?: _articlesType.value?.value?:""}\")"
+        val call = nytRetrofit.retrofitService
+            .getArticles(
+                sort="newest",
+                searchQuery= searchQ,
+                filterQuery = filterQ
+            )
         _loadingState.postValue(true)
+        Log.d("NYTViewModel", "getArticles: $searchQ $filterQ $diffTime")
+
         call.enqueue(object : Callback<Article> {
             override fun onResponse(
                 call: Call<Article>,
@@ -118,5 +128,11 @@ object NYTViewModel : ViewModel() {
                 _apiError.postValue(t.message)
             }
         })
+    }
+
+    fun setCategory(articleType: ArticleType) {
+        Log.d("NYTViewModel", "setCategory: ${articleType.value}")
+        _articlesType.postValue(articleType)
+        getArticles(articleType = articleType)
     }
 }

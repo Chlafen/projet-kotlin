@@ -41,7 +41,7 @@ import com.example.nyt.viewModel.NYTViewModel
 @Composable
 fun ArticlePage(articleID: String, headLineMain: String?) {
     val viewModel = NYTViewModel
-    viewModel.getArticles(ArticleType.All, headLineMain?:"")
+    viewModel.getArticles(searchQ = headLineMain?:"")
     val articles by viewModel.articles.observeAsState()
     val size = articles?.response?.docs?.size ?: 0
     val apiError by viewModel.apiError.observeAsState()
@@ -56,7 +56,7 @@ fun ArticlePage(articleID: String, headLineMain: String?) {
         ) {
             Text(text = "Error: ${apiError.toString()}")
             Button(onClick = {
-                viewModel.getArticles(ArticleType.All, headLineMain?:"")
+                viewModel.getArticles(searchQ=headLineMain?:"")
             }) {
                 Text(text = "Retry")
             }

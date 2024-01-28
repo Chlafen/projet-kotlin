@@ -67,7 +67,7 @@ fun SearchPage(navController: NavController) {
         CustomSearchBar(
             onSearch = {
                 viewModel.onSearchQueryChange(it)
-                viewModel.getArticles(ArticleType.All, it)
+                viewModel.getArticles(searchQ= it)
             },
         )
         if(loadingState == true ) {

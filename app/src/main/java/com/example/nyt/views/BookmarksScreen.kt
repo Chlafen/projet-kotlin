@@ -24,7 +24,7 @@ import com.example.nyt.viewModel.NYTViewModel
 @Composable
 fun BookmarksScreen(navController: NavController) {
     val viewModel = NYTViewModel
-    viewModel.getArticles( ArticleType.All)
+    viewModel.getArticles()
     val articles by viewModel.articles.observeAsState()
 
     val ctx = LocalContext.current
@@ -43,7 +43,7 @@ fun BookmarksScreen(navController: NavController) {
         ) {
             Text(text = "Error: ${apiError.toString()}")
             Button(onClick = {
-                viewModel.getArticles(ArticleType.All)
+                viewModel.getArticles()
             }) {
                 Text(text = "Retry")
             }

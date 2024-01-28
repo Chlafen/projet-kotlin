@@ -1,5 +1,6 @@
 package com.example.nyt.views
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -33,15 +34,17 @@ import coil.compose.AsyncImage
 import com.example.nyt.data.Doc
 import com.example.nyt.model.ArticleType
 import com.example.nyt.viewModel.NYTViewModel
+import com.example.nyt.widgets.MenuDropDown
 import kotlin.math.min
 
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel = NYTViewModel
-    viewModel.getArticles( ArticleType.All, "")
+    viewModel.getArticles()
     val articles by viewModel.articles.observeAsState()
     val apiError by viewModel.apiError.observeAsState()
     val loadingState by viewModel.loadingState.observeAsState()
+    val articlesType by viewModel.articlesType.observeAsState()
 
     if(apiError != null) {
         Column(
@@ -53,7 +56,7 @@ fun HomeScreen(navController: NavController) {
         ) {
             Text(text = "Error: ${apiError.toString()}")
             Button(onClick = {
-                viewModel.getArticles(ArticleType.All)
+                viewModel.getArticles()
             }) {
                 Text(text = "Retry")
             }
@@ -68,15 +71,29 @@ fun HomeScreen(navController: NavController) {
         ) {
             CircularProgressIndicator()
         }
-    }
-        LazyColumn (
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+    }else{
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
-            items(articles?.response?.docs?.size ?: 0) { index ->
-                ArticleCard(article = articles!!.response.docs[index], navController = navController)
+            MenuDropDown(
+                onChanged = { newType -> run {
+                    Log.d("HomeScreen", "category changed to ${newType.value}")
+                }},
+                initialValue = articlesType ?: ArticleType.All
+            )
+            LazyColumn (
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(articles?.response?.docs?.size ?: 0) { index ->
+                    ArticleCard(article = articles!!.response.docs[index], navController = navController)
+                }
             }
         }
+
+    }
 }
 
 @Composable
@@ -156,7 +173,7 @@ fun ArticleCard(article: Doc, navController: NavController) {
                             style = MaterialTheme.typography.bodySmall
                         )
                         Text(text = " | ", style = MaterialTheme.typography.bodySmall)
-                        Text(text = article.source?:"Unkown Source", style = MaterialTheme.typography.bodySmall)
+                        Text(text = article.source?:"Unknown Source", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
