@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -52,7 +51,7 @@ fun ConnectivityStatus() {
         if (!isConnected) {
             visibility = true
         } else {
-            delay(2000)
+            delay(5000)
             visibility = false
         }
     }
@@ -64,11 +63,6 @@ fun ConnectivityStatusBox(isConnected: Boolean) {
         label = ""
     )
     val message = if (isConnected) "Back Online!" else "No Internet Connection!"
-    val iconResource = if (isConnected) {
-        Icon(Icons.Default.Check, "Connectivity Icon", tint = Color.White)
-    } else {
-        Icon(Icons.Default.Close, "Connectivity Icon", tint = Color.White)
-    }
 
     Box(
         modifier = Modifier
@@ -78,7 +72,11 @@ fun ConnectivityStatusBox(isConnected: Boolean) {
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            iconResource
+            if (isConnected) {
+                Icon(Icons.Default.Check, "Connectivity Icon", tint = Color.White)
+            } else {
+                Icon(Icons.Default.Close, "Connectivity Icon", tint = Color.White)
+            }
             Spacer(modifier = Modifier.size(8.dp))
             Text(message, color = Color.White, fontSize = 15.sp)
         }

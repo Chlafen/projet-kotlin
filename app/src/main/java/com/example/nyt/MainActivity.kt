@@ -19,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.nyt.ui.theme.NYTTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,7 +40,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold (
                        bottomBar = {
-                           BottomNavigationBar(navController = navController)
+                           if(connection === ConnectionState.Available)
+                               BottomNavigationBar(navController = navController)
                        },
                         topBar = {
                             var title by remember {
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
                             }
                             TopAppBar(
                                 title = {
-                                    Text(title)
+                                    Text(if(title=="null") "NYT" else title)
                                 }
                             )
                         },
@@ -67,12 +67,12 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement =  Arrangement.Top,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(0.dp)
+                                .padding(innerPadding)
                         ){
                             ConnectivityStatus()
                             when(connection === ConnectionState.Available){
-                                true -> AppNavHost(navController = navController, modifier = Modifier.padding(innerPadding))
-                                false -> Text(text = "No Internet Connection")
+                                true -> AppNavHost(navController = navController)
+                                false -> Text(text = "")
                             }
                         }
                     }
